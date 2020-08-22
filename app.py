@@ -1,10 +1,10 @@
 from flask import Flask, send_from_directory
-import config
+from . import config
 from glob import glob
 from os import path
 import subprocess
 
-APP = Flask(config.APP_NAME, instance_path = path.abspath("../instance"))
+APP = Flask(config.APP_NAME)
 
 DEVICES_FOLDER_PATH = path.abspath(path.join(
 	APP.instance_path,

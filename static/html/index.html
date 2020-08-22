@@ -4,69 +4,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>USB Passthrough</title>
-	<style>
-		body {
-			background: black;
-			font-size: 9pt;
-			margin: 0;
-			min-height: 100vh;
-			display: flex;
-			flex-flow: column wrap;
-			align-items: center;
-			justify-content: center;
-		}
-
-		main {
-			flex-grow: 1;
-			display: flex;
-			flex-flow: row wrap;
-			align-items: center;
-			justify-content: center;
-		}
-
-		.command-button {
-			color: black;
-			background: white;
-			font-size: 5em;
-			width: 5em;
-			height: 5em;
-			margin: 0.5em;
-			padding: 0;
-			border: none;
-			border-radius: 50%;
-		}
-
-		.command-button:active {
-			background: gray;
-		}
-	</style>
 </head>
 <body>
-	<main>
-		<input class="command-button" id="attach-button" type="button" value="Attach">
-		<input class="command-button" id="detach-button" type="button" value="Detach">
-	</main>
-	<script>
-		(() => {
-			"use strict";
-
-			const Request = new XMLHttpRequest();
-
-			function request(command) {
-				Request.open("GET", `/${command}`);
-				Request.send();
-			}
-
-			window.addEventListener("load", e => {
-				document
-					.getElementById("attach-button")
-					.addEventListener("click", _ => request("attach"));
-
-				document
-					.getElementById("detach-button")
-					.addEventListener("click", _ => request("detach"));
-			});
-		})();
-	</script>
+	<input
+		id="attach-button"
+		type="button"
+		value="Attach">
+	<input
+		id="detach-button"
+		type="button"
+		value="Detach">
+	<script src="/static/js/main.js"></script>
 </body>
 </html>
