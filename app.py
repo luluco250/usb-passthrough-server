@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 import config
 from glob import glob
 from os import path
 import subprocess
 
-APP = Flask(config.APP_NAME)
+APP = Flask(config.APP_NAME, instance_path = path.abspath("../instance"))
 
 DEVICES_FOLDER_PATH = path.abspath(path.join(
 	APP.instance_path,
@@ -12,22 +12,30 @@ DEVICES_FOLDER_PATH = path.abspath(path.join(
 
 DEVICES = glob(path.join(DEVICES_FOLDER_PATH, config.DEVICE_FILE_GLOB))
 
+@APP.route("/")
+def index():
+	return send_from_directory(f"{APP.root_path}/static/html", "index.html")
+
 @APP.route("/get-devices")
 def get_devices():
-	devices = "\n".join(DEVICES)
-	return f"List of devices at '{DEVICES_FOLDER_PATH}':\n{devices}\n", 200
+	return {
+		"message": "Ok",
+		"devices": DEVICES
+	}
 
 @APP.route("/attach")
 def attach():
+	print("Attaching...")
 	return call_virsh("attach-device")
 
 @APP.route("/detach")
 def detach():
+	print("Detaching...")
 	return call_virsh("detach-device")
 
 def call_virsh(command: str):
 	if command not in ("attach-device", "detach-device"):
-		return f"Unknown command '{command}'\n", 400
+		return {"message": f"Unknown command '{command}'\n"}, 400
 
 	try:
 		for dev in DEVICES:
@@ -49,9 +57,9 @@ def call_virsh(command: str):
 		else:
 			output = ""
 
-		return (
-			f"Call to virsh failed with exit code {e.returncode}\n{output}",
-			500
-		)
+		return ({
+			"message":
+				f"Call to virsh failed with exit code {e.returncode}\n{output}"
+		}, 500)
 
-	return "Ok\n", 200
+	return {"message": "Ok"}
